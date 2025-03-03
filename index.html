@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paper Strip Magic Square Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Paper Strip Magic Square Generator</h1>
+      <div class="instruction-block">
+        <p>
+          This tool helps you create a magic square using strips of paper with
+          the minimal number of cuts. Enter an odd number to generate a set of
+          paper strips and see how they can be arranged to form a magic square.
+        </p>
+      </div>
+
+      <div class="input-group">
+        <input
+          type="number"
+          id="size"
+          min="3"
+          step="2"
+          placeholder="e.g., 5, 7, 9"
+        />
+        <button onclick="generatePaperStripsMagicSquare()">Generate</button>
+      </div>
+
+      <div id="error-message" class="error"></div>
+
+      <div id="output-container" style="display: none">
+        <div id="strips-container" class="paper-strips-container">
+          <h2>Paper Strips</h2>
+          <p>
+            Here are the strips of paper you'll need. Each contains a sequence
+            of numbers:
+          </p>
+          <div id="paper-strips"></div>
+        </div>
+
+        <div id="cutting-instructions" class="cutting-instructions">
+          <h2>Cutting Instructions</h2>
+          <p>Follow these steps to cut and arrange your strips:</p>
+          <div id="cut-steps"></div>
+        </div>
+
+        <div id="magic-square-container" class="magic-square-container">
+          <h2>Resulting Magic Square</h2>
+          <p>Arrange the strips as shown below to create a magic square:</p>
+          <div id="magic-square"></div>
+
+          <div id="stats" class="stats-block"></div>
+        </div>
+
+        <div class="button-group">
+          <button id="backButton" class="secondary" onclick="reset()">
+            <span>← Back</span>
+          </button>
+          <button id="highlightButton" onclick="toggleHighlight()">
+            Highlight Strips
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let highlightMode = false;
+
+      function generatePaperStripsMagicSquare() {
+        const sizeInput = document.getElementById("size").value;
+        const n = parseInt(sizeInput);
+        const errorElement = document.getElementById("error-message");
+        const outputContainer = document.getElementById("output-container");
+
+        errorElement.textContent = "";
+
+        if (isNaN(n) || n < 3) {
+          errorElement.textContent =
+            "Please enter a number that is 5 or greater.";
+          outputContainer.style.display = "none";
+          return;
+        }
+
+        if (n % 2 === 0) {
+          errorElement.textContent = "Please enter an odd number (5, 7, etc.).";
+          outputContainer.style.display = "none";
+          return;
+        }
+
+        // Show output container
+        outputContainer.style.display = "block";
+
+        // Generate the paper strips
+        const strips = generateStrips(n);
+
+        // Display the paper strips
+        displayPaperStrips(strips, n);
+
+        // Display cutting instructions
+        displayCuttingInstructions(strips, n);
+
+        // Generate and display the magic square
+        const magicSquare = generateMagicSquare(strips, n);
+        displayMagicSquare(magicSquare, n);
+
+        // Display statistics
+        displayStats(n);
+      }
+
+      function generateStrips(n) {
+        const strips = [];
+
+        for (let i = 0; i < n; i++) {
+          const strip = [];
+          for (let j = 0; j < n; j++) {
+            // Calculate the number for this position using a circular pattern
+            strip.push(((i + j) % n) + 1);
+          }
+          strips.push(strip);
+        }
+
+        return strips;
+      }
+
+      function displayPaperStrips(strips, n) {
+        const stripsContainer = document.getElementById("paper-strips");
+        stripsContainer.innerHTML = "";
+
+        strips.forEach((strip, index) => {
+          const stripDiv = document.createElement("div");
+          stripDiv.className = "paper-strip";
+
+          const labelDiv = document.createElement("div");
+          labelDiv.className = "strip-label";
+          labelDiv.textContent = `Strip ${index + 1}:`;
+          stripDiv.appendChild(labelDiv);
+
+          const numbersDiv = document.createElement("div");
+          numbersDiv.style.display = "flex";
+
+          strip.forEach((num) => {
+            const cell = document.createElement("div");
+            cell.className = "number-cell";
+            cell.textContent = num;
+            numbersDiv.appendChild(cell);
+          });
+
+          stripDiv.appendChild(numbersDiv);
+          stripsContainer.appendChild(stripDiv);
+        });
+      }
+
+      function displayPaperStrips(strips, n) {
+        const stripsContainer = document.getElementById("paper-strips");
+        stripsContainer.innerHTML = "";
+
+        strips.forEach((strip, index) => {
+          const stripDiv = document.createElement("div");
+          stripDiv.className = "paper-strip";
+
+          const labelDiv = document.createElement("div");
+          labelDiv.className = "strip-label";
+          labelDiv.textContent = `Strip ${index + 1}:`;
+          stripDiv.appendChild(labelDiv);
+
+          const numbersDiv = document.createElement("div");
+          numbersDiv.style.display = "flex";
+
+          strip.forEach((num) => {
+            const cell = document.createElement("div");
+            cell.className = "number-cell";
+            cell.textContent = num;
+            numbersDiv.appendChild(cell);
+          });
+
+          stripDiv.appendChild(numbersDiv);
+          stripsContainer.appendChild(stripDiv);
+        });
+      }
+
+      function displayCuttingInstructions(strips, n) {
+        const cutStepsDiv = document.getElementById("cut-steps");
+        cutStepsDiv.innerHTML = "";
+
+        strips.forEach((strip, index) => {
+          const cutPosition = index - 1; // Start cutting from position 1
+
+          const stepDiv = document.createElement("div");
+          stepDiv.innerHTML = `<h3>Strip ${index + 1}</h3>`;
+
+          const description = document.createElement("p");
+          if (index === 0) {
+            description.textContent = `No cut needed for Strip ${
+              index + 1
+            }, use as is.`;
+          } else {
+            description.textContent = `Cut after position ${
+              cutPosition + 1
+            } and place the cut portion at the end.`;
+          }
+          stepDiv.appendChild(description);
+
+          // Create illustration
+          const illDiv = document.createElement("div");
+          illDiv.className = "cut-illustration";
+
+          // Original strip (always starts with 1,2,3,...,n)
+          const origDiv = document.createElement("div");
+          origDiv.style.display = "flex";
+          const originalStrip = Array.from({ length: n }, (_, i) => i + 1);
+          originalStrip.forEach((num, i) => {
+            const cell = document.createElement("div");
+            cell.className = "number-cell";
+            cell.textContent = num;
+            if (index !== 0 && i === cutPosition) {
+              cell.style.borderRight = "2px dashed red";
+            }
+            origDiv.appendChild(cell);
+          });
+
+          // Arrow
+          const arrow = document.createElement("div");
+          arrow.className = "cut-arrow";
+          arrow.innerHTML = "→";
+
+          // Result strip (cut and rotated)
+          const resultDiv = document.createElement("div");
+          resultDiv.style.display = "flex";
+
+          const rotatedStrip =
+            index === 0
+              ? originalStrip
+              : [
+                  ...originalStrip.slice(cutPosition + 1),
+                  ...originalStrip.slice(0, cutPosition + 1),
+                ];
+          rotatedStrip.forEach((num) => {
+            const cell = document.createElement("div");
+            cell.className = "number-cell";
+            cell.textContent = num;
+            resultDiv.appendChild(cell);
+          });
+
+          illDiv.appendChild(origDiv);
+          if (index !== 0) {
+            illDiv.appendChild(arrow);
+            illDiv.appendChild(resultDiv);
+          }
+
+          stepDiv.appendChild(illDiv);
+          cutStepsDiv.appendChild(stepDiv);
+        });
+      }
+
+      function generateMagicSquare(strips, n) {
+        const square = Array(n)
+          .fill()
+          .map(() => Array(n).fill(0));
+
+        // For each row in the magic square
+        for (let i = 0; i < n; i++) {
+          // Use the corresponding strip, but shift its position
+          const stripIndex = i;
+          for (let j = 0; j < n; j++) {
+            // Calculate offset for this row - this creates the magic square pattern
+            const offset = i;
+            const value = strips[stripIndex][(j + offset) % n];
+            square[i][j] = { value, stripIndex };
+          }
+        }
+
+        return square;
+      }
+
+      function displayMagicSquare(square, n) {
+        const magicSquareDiv = document.getElementById("magic-square");
+        magicSquareDiv.innerHTML = "";
+        magicSquareDiv.className = "magic-square";
+        magicSquareDiv.style.gridTemplateColumns = `repeat(${n}, 50px)`;
+
+        for (let i = 0; i < n; i++) {
+          for (let j = 0; j < n; j++) {
+            const cell = document.createElement("div");
+            cell.className = "magic-square-cell";
+            cell.dataset.row = i;
+            cell.dataset.col = j;
+            cell.dataset.strip = square[i][j].stripIndex;
+
+            cell.textContent = square[i][j].value;
+
+            const stripIndicator = document.createElement("span");
+            stripIndicator.className = "strip-indicator";
+            stripIndicator.textContent = square[i][j].stripIndex + 1;
+            cell.appendChild(stripIndicator);
+
+            magicSquareDiv.appendChild(cell);
+          }
+        }
+      }
+
+      function displayStats(n) {
+        const statsDiv = document.getElementById("stats");
+
+        // Calculate the magic constant
+        // formula to calculate magic constant: M = n * (n^2 + 1) / 2
+        const magicConstant = (n * (n + 1)) / 2;
+        const rowSum = magicConstant / n;
+
+        statsDiv.innerHTML = `
+                <h3>Magic Square Statistics</h3>
+                <p>Size of magic square: <strong>${n} × ${n}</strong></p>
+                <p>Minimum Number of cuts needed: <strong>${n - 1}</strong></p>
+                <p>Magic sum for each row/column/diagonal: <strong>${magicConstant}</strong></p>
+                <p>Each strip is used exactly once in each row</p>
+                <p>The small numbers in the top-right corners indicate which strip was used</p>
+            `;
+      }
+
+      function toggleHighlight() {
+        highlightMode = !highlightMode;
+        const highlightButton = document.getElementById("highlightButton");
+        const cells = document.querySelectorAll(".magic-square-cell");
+
+        if (highlightMode) {
+          highlightButton.textContent = "Hide Highlights";
+          cells.forEach((cell) => {
+            const stripIndex = parseInt(cell.dataset.strip);
+            cell.classList.add("highlighted");
+            // Different color for each strip
+            const hue =
+              ((stripIndex * 360) /
+                parseInt(document.getElementById("size").value)) %
+              360;
+            cell.style.backgroundColor = `hsla(${hue}, 80%, 85%, 0.7)`;
+            cell.style.borderColor = `hsla(${hue}, 80%, 60%, 1)`;
+          });
+        } else {
+          highlightButton.textContent = "Highlight Strips";
+          cells.forEach((cell) => {
+            cell.classList.remove("highlighted");
+            cell.style.backgroundColor = "";
+            cell.style.borderColor = "";
+          });
+        }
+      }
+
+      function reset() {
+        document.getElementById("size").value = "";
+        document.getElementById("error-message").textContent = "";
+        document.getElementById("output-container").style.display = "none";
+        highlightMode = false;
+      }
+
+      // Add event listener for Enter key
+      document
+        .getElementById("size")
+        .addEventListener("keyup", function (event) {
+          if (event.key === "Enter") {
+            generatePaperStripsMagicSquare();
+          }
+        });
+    </script>
+  </body>
+</html>

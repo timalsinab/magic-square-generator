@@ -1,0 +1,241 @@
+
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --highlight-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #2b2d42;
+            --success-color: #4cc9f0;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-color);
+        }
+        
+        .container {
+            background: white;
+            max-width: 900px;
+            width: 95%;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin: 2rem;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
+        p {
+            line-height: 1.6;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+        
+        input {
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            width: 100px;
+            text-align: center;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.secondary {
+            background-color: #6c757d;
+        }
+        
+        button.secondary:hover {
+            background-color: #5a6268;
+        }
+        
+        .error {
+            color: #e63946;
+            text-align: center;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .paper-strips-container {
+            margin: 2rem 0;
+        }
+        
+        .paper-strip {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+        }
+        
+        .strip-label {
+            font-weight: bold;
+            margin-right: 1rem;
+            min-width: 60px;
+        }
+        
+        .number-cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ced4da;
+            margin: 0 2px;
+            font-size: 1.2rem;
+            background-color: white;
+        }
+        
+        .magic-square-container {
+            margin: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .magic-square {
+            display: grid;
+            gap: 4px;
+            margin: 1rem 0;
+        }
+        
+        .magic-square-cell {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ced4da;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background-color: white;
+            position: relative;
+        }
+        
+        .magic-square-cell.highlighted {
+            background-color: rgba(76, 201, 240, 0.3);
+            border-color: var(--success-color);
+        }
+        
+        .strip-indicator {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 0.7rem;
+            color: var(--highlight-color);
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        
+        .instruction-block {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .stats-block {
+            background-color: #e9ecef;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .cutting-instructions {
+            background-color: rgba(247, 37, 133, 0.1);
+            border-left: 4px solid var(--highlight-color);
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+            text-align: left;
+        }
+        
+        .cut-illustration {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            overflow-x: auto;
+            padding: 0.5rem;
+        }
+        
+        .cut-arrow {
+            color: var(--highlight-color);
+            font-size: 1.5rem;
+            margin: 0 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .paper-strip {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .strip-label {
+                margin-bottom: 0.5rem;
+            }
+            
+            .number-cell {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            
+            .magic-square-cell {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+        }
